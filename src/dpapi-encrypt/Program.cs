@@ -73,13 +73,6 @@ namespace IntelligentPlant.DpapiEncrypt {
             });
 
             var opt = new Option(
-                "--scope",
-                $"Specifies the DPAPI scope ({DataProtectionScope.CurrentUser}, {DataProtectionScope.LocalMachine}).",
-                new Argument<DataProtectionScope>(DataProtectionScope.CurrentUser)
-            );
-            command.AddOption(opt);
-
-            opt = new Option(
                 "--entropy",
                 "A base64-encoded byte array containing additional entropy that was used to encrypt the data.",
                 new Argument<string>(string.Empty)
@@ -113,14 +106,16 @@ namespace IntelligentPlant.DpapiEncrypt {
         }
 
 
-        private static int Decrypt(DataProtectionScope scope, string entropy, string value) {
+        private static int Decrypt(string entropy, string value) {
             var entropyBytes = string.IsNullOrWhiteSpace(entropy)
                     ? null
                     : Convert.FromBase64String(entropy);
 
             try {
                 var bytes = Convert.FromBase64String(value);
-                var decrypted = Encoding.UTF8.GetString(ProtectedData.Unprotect(bytes, entropyBytes, scope));
+                // Doesn't matter which scope is specified when decrypting. 
+                // See https://stackoverflow.com/questions/19164926/data-protection-api-scope-localmachine-currentuser
+                var decrypted = Encoding.UTF8.GetString(ProtectedData.Unprotect(bytes, entropyBytes, default));
                 Console.WriteLine();
                 Console.WriteLine(decrypted);
             }
