@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "dpapi-encrypt": {
+      "commandName": "Project",
+      "commandLineArgs": "encrypt --entropy 7V88R7wkWeiT9lBF4whFu6RHEPM2HfiIgmrKIY09uq0= --value test --scope CurrentUser"
+    }
+  }
+}
