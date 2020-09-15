@@ -1,7 +1,6 @@
 ﻿using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,35 +22,26 @@ namespace IntelligentPlant.DpapiEncrypt {
                 "encrypt",
                 "Encrypts data using the Windows DPAPI"
             );
-            command.Argument.AddValidator(x => {
-                var valueArg = x.Children["value"];
-                if (valueArg?.Arguments?.FirstOrDefault() == null) {
-                    return "A value is required.";
-                }
 
-                return null;
-            });
-
-            var opt = new Option(
-                "--scope",
-                $"Specifies the DPAPI scope ({DataProtectionScope.CurrentUser}, {DataProtectionScope.LocalMachine}).",
-                new Argument<DataProtectionScope>(DataProtectionScope.CurrentUser)
-            );
-            command.AddOption(opt);
-
-            opt = new Option(
-                "--entropy",
-                "A base64-encoded byte array containing additional entropy to use when encrypting the data.",
-                new Argument<string>(string.Empty)
-            );
-            command.AddOption(opt);
-
-            opt = new Option(
+            var valueOpt = new Option<string>(
                 "--value",
-                "The value to encrypt.",
-                new Argument<string>()
+                "The value to encrypt."
             );
-            command.AddOption(opt);
+            valueOpt.IsRequired = true;
+            command.AddOption(valueOpt);
+
+            var scopeOpt = new Option<DataProtectionScope>(
+                "--scope",
+                $"Specifies the DPAPI scope ({DataProtectionScope.CurrentUser}, {DataProtectionScope.LocalMachine})."
+            );
+            scopeOpt.IsRequired = true;
+            command.AddOption(scopeOpt);
+
+            var entropyOpt = new Option<string>(
+                "--entropy",
+                "A base64-encoded byte array containing additional entropy to use when encrypting the data."
+            );
+            command.AddOption(entropyOpt);
 
             command.Handler = CommandHandler.Create(typeof(Program).GetMethod(nameof(Encrypt), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic));
             return command;
@@ -63,35 +53,26 @@ namespace IntelligentPlant.DpapiEncrypt {
                 "decrypt",
                 "Decrypts data that was encrypted using the Windows DPAPI"
             );
-            command.Argument.AddValidator(x => {
-                var valueArg = x.Children["value"];
-                if (valueArg?.Arguments?.FirstOrDefault() == null) {
-                    return "A value is required.";
-                }
 
-                return null;
-            });
-
-            var opt = new Option(
-                "--entropy",
-                "A base64-encoded byte array containing additional entropy that was used to encrypt the data.",
-                new Argument<string>(string.Empty)
-            );
-            command.AddOption(opt);
-
-            opt = new Option(
+            var valueOpt = new Option<string>(
                 "--value",
-                "The value to decrypt.",
-                new Argument<string>()
+                "The value to encrypt."
             );
-            command.AddOption(opt);
+            valueOpt.IsRequired = true;
+            command.AddOption(valueOpt);
+
+            var entropyOpt = new Option<string>(
+                "--entropy",
+                "A base64-encoded byte array containing additional entropy to use when encrypting the data."
+            );
+            command.AddOption(entropyOpt);
 
             command.Handler = CommandHandler.Create(typeof(Program).GetMethod(nameof(Decrypt), System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic));
             return command;
         }
 
 
-        private static int Encrypt(DataProtectionScope scope, string entropy, string value) {
+        private static int Encrypt(string value, DataProtectionScope scope, string entropy) {
             var entropyBytes = string.IsNullOrWhiteSpace(entropy)
                     ? null
                     : Convert.FromBase64String(entropy);
@@ -106,7 +87,7 @@ namespace IntelligentPlant.DpapiEncrypt {
         }
 
 
-        private static int Decrypt(string entropy, string value) {
+        private static int Decrypt(string value, string entropy) {
             var entropyBytes = string.IsNullOrWhiteSpace(entropy)
                     ? null
                     : Convert.FromBase64String(entropy);
