@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0D8C660E-C0D5-45B4-8FFF-22007B8AF266}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dpapi-encrypt", "src\dpapi-encrypt\dpapi-encrypt.csproj", "{DA676B31-0175-47BE-AED4-541508B90F63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dpapi-encrypt", "src\dpapi-encrypt\dpapi-encrypt.csproj", "{DA676B31-0175-47BE-AED4-541508B90F63}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{FD322582-175C-4822-A2C7-576A52ED1B64}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
