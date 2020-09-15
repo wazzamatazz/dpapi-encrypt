@@ -63,7 +63,7 @@ namespace IntelligentPlant.DpapiEncrypt {
 
             var entropyOpt = new Option<string>(
                 "--entropy",
-                "A base64-encoded byte array containing additional entropy to use when encrypting the data."
+                "A base64-encoded byte array containing additional entropy to use when decrypting the data."
             );
             command.AddOption(entropyOpt);
 
